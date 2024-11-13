@@ -1,6 +1,3 @@
-Aquí tienes un README actualizado y más claro para el proyecto:
-
----
 
 # Gestión de Recetas y Ventas para Restaurante
 
