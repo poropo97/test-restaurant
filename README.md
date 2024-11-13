@@ -6,6 +6,8 @@ Aquí tienes un README actualizado y más claro para el proyecto:
 
 Este proyecto permite gestionar recetas (escandallos) y ventas en un restaurante, proporcionando funciones para registrar recetas con ingredientes, calcular márgenes de beneficio, y analizar ventas diarias.
 
+**Autor**: Alejandro Ruesga
+
 ## Requisitos Previos
 
 - **PHP** >= 8.0
@@ -18,28 +20,28 @@ Este proyecto permite gestionar recetas (escandallos) y ventas en un restaurante
 
 2. **Instalar dependencias**
 
-   ```bash
-   composer install
-   ```
+    ```bash
+    composer install
+    ```
 
 3. **Configurar el archivo `.env`**
 
-   Crea el archivo `.env` (puedes copiar `.env.example`) y configura la base de datos para usar SQLite:
+    Crea el archivo `.env` (puedes copiar `.env.example`) y configura la base de datos para usar SQLite:
 
-   ```env
-   DB_CONNECTION=sqlite
-   DB_DATABASE=/ruta/al/archivo/database.sqlite
-   ```
+    ```env
+    DB_CONNECTION=sqlite
+    DB_DATABASE=/ruta/al/archivo/database.sqlite
+    ```
 
-   Luego, crea el archivo `database.sqlite` en la carpeta `database` para almacenar los datos.
+    Luego, crea el archivo `database.sqlite` en la carpeta `database` para almacenar los datos.
 
 4. **Ejecutar migraciones y seeders**
 
-   Ejecuta las migraciones y seeders para crear la estructura de la base de datos y agregar datos iniciales de ingredientes y recetas:
+    Ejecuta las migraciones y seeders para crear la estructura de la base de datos y agregar datos iniciales de ingredientes y recetas:
 
-   ```bash
-   php artisan migrate --seed
-   ```
+    ```bash
+    php artisan migrate --seed
+    ```
 
 ## Uso
 
@@ -82,13 +84,13 @@ Este comando registrará una venta en la fecha especificada con las recetas, can
 1. **Migraciones**: Crean tablas para ingredientes, recetas, ventas y líneas de venta, incluyendo relaciones y estructuras necesarias para almacenar los datos.
 2. **Seeders**: Añaden ingredientes y recetas iniciales a la base de datos para facilitar el uso y evitar errores de referencia.
 3. **Modelos**: Definen las relaciones entre las tablas:
-   - `Recipe` (recetas) se conecta con `Ingredient` (ingredientes) y otras `Recipe` como sub-recetas.
-   - `Sale` (ventas) tiene varias `SaleLine` (líneas de venta), que incluyen recetas vendidas, cantidades y precios.
+    - `Recipe` (recetas) se conecta con `Ingredient` (ingredientes) y otras `Recipe` como sub-recetas.
+    - `Sale` (ventas) tiene varias `SaleLine` (líneas de venta), que incluyen recetas vendidas, cantidades y precios.
 4. **Casos de Uso**:
-   - `AddRecipe`: Agrega recetas y calcula su coste, así como los márgenes de beneficio.
-   - `AddSale`: Registra ventas, calcula los márgenes de cada receta vendida y analiza el día con mayor y menor volumen de ventas.
+    - `AddRecipe`: Agrega recetas y calcula su coste, así como los márgenes de beneficio.
+    - `AddSale`: Registra ventas, calcula los márgenes de cada receta vendida y analiza el día con mayor y menor volumen de ventas.
 5. **Comandos Artisan**:
-   - `AddRecipeCommand`: Permite agregar recetas y mostrar el análisis de costes desde la consola.
-   - `AddSaleCommand`: Registra ventas y calcula el margen de beneficio y análisis de ventas desde la consola.
+    - `AddRecipeCommand`: Permite agregar recetas y mostrar el análisis de costes desde la consola.
+    - `AddSaleCommand`: Registra ventas y calcula el margen de beneficio y análisis de ventas desde la consola.
 
-Este proyecto permite gestionar recetas y ventas en un restaurante de manera eficiente a través de la línea de comandos, facilitando el cálculo de costes y márgenes de beneficio.
+Este proyecto permite gestionar recetas y ventas en un restaurante de manera eficiente a través de la línea de comandos, facilitando el cálculo de costes y márgenes de beneficio. No se ha seguido ninguna metodología específica como hexagonal, más allá de las convenciones de Laravel.
