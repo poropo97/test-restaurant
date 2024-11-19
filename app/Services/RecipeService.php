@@ -15,7 +15,7 @@ use App\Models\Escandallo;
 * Estos "casos de uso" utilizan funciones que éstas podrán ser re-utilizadas en otros 
 * casos de uso relacionados con las recetas o todo aquel caso de uso que pueda envolver a éste servicio
 */
-class RecipeService  extends RecipeUtilityService
+class RecipeService extends RecipeUtilityService
 {
     protected $recipe;
 
@@ -31,7 +31,7 @@ class RecipeService  extends RecipeUtilityService
     * @param float $salePrice
     * @param Escandallo[] $ingredients 
     */
-    public function createRecipe(String $name, Gloat $salePrice, Array $ingredients)
+    public function createRecipe(String $name, Float $salePrice, Array $ingredients)
     {
         // validamos ingredientes
         $this->validateIngredients($ingredients);

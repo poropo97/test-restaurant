@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Ingredient;
 use App\Models\Escandallo;
+use App\Models\Recipe;
 use Exception;
 
 /*
