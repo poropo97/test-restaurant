@@ -3,9 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\RecipeService;
+use App\Services\Recipe\RecipeService;
 use App\Models\Recipe;
 use App\Models\Ingredient;
+use App\Models\Escandallo;
 
 class AddRecipeCommand extends Command
 {
@@ -32,15 +33,40 @@ class AddRecipeCommand extends Command
             $ingredientType = $this->confirm('¿El ingrediente es una receta existente?');
 
             if ($ingredientType) {
-                $recipes = Recipe::all()->pluck('name', 'id')->toArray();
-                $recipeId = $this->choice('Seleccione la receta', $recipes);
+                // Mostrar listado de recetas disponibles
+                $recipes = Recipe::all(['id', 'name']);
+                $this->info('Lista de recetas disponibles:');
+                foreach ($recipes as $recipe) {
+                    $this->line("ID: {$recipe->id} - Nombre: {$recipe->name}");
+                }
+
+                // Solicitar ID de la receta al usuario
+                $recipeId = $this->ask('Ingrese el ID de la receta que desea seleccionar');
+                
                 $quantity = $this->ask('Ingrese la cantidad de la receta');
-                $ingredients[] = ['id' => $recipeId, 'quantity' => $quantity, 'type' => 'recipe'];
+                $ingredients[] = new Escandallo([
+                    'quantity' => $quantity,
+                    'recipe_id' => $recipeId,
+
+                ]);
             } else {
-                $ingredientsList = Ingredient::all()->pluck('name', 'id')->toArray();
-                $ingredientId = $this->choice('Seleccione el ingrediente', $ingredientsList);
+                // Mostrar listado de ingredientes disponibles
+                $ingredientsList = Ingredient::all(['id', 'name']);
+                $this->info('Lista de ingredientes disponibles:');
+                foreach ($ingredientsList as $ingredient) {
+                    $this->line("ID: {$ingredient->id} - Nombre: {$ingredient->name}");
+                }
+
+                // Solicitar ID del ingrediente al usuario
+                $ingredientId = $this->ask('Ingrese el ID del ingrediente que desea seleccionar');
+
+                
+
                 $quantity = $this->ask('Ingrese la cantidad del ingrediente');
-                $ingredients[] = ['id' => $ingredientId, 'quantity' => $quantity, 'type' => 'ingredient'];
+                $ingredients[] = new Escandallo([
+                    'quantity' => $quantity,
+                    'ingredient_id' => $ingredientId,
+                ]);
             }
 
             if (!$this->confirm('¿Desea agregar otro ingrediente?')) {

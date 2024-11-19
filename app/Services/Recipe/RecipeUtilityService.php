@@ -1,7 +1,8 @@
 <?php
 // app/Services/RecipeUtilityService.php
-namespace App\Services;
+namespace App\Services\Recipe;
 
+use Illuminate\Support\Collection;
 use App\Models\Ingredient;
 use App\Models\Escandallo;
 use App\Models\Recipe;
@@ -39,21 +40,79 @@ class RecipeUtilityService
         }
     }
 
-    public function createRecipeData($name, $salePrice, $ingredients) : Recipe
+    public function createRecipeData($name, $salePrice, $ingredients) : Bool
     {
         // creamos la receta
-        $this->recipe->create([
-            'name' => $name,
-            'sale_price' => $salePrice,
-        ]);
+        $this->recipe->name = $name;
+        $this->recipe->sale_price = $salePrice;
+        $this->recipe->save();
+        
         // recorremos los ingredientes y los asociamos a la receta. 
         foreach ($ingredients as $ingredient) {
-            $this->recipe->ingredients()->attach($ingredient, ['quantity' => $ingredient->quantity]);
+            // dd($ingredient);
+            // si se trata de un ingrediente accedemos al coste del ingrediente
+            if (isset($ingredient->ingredient_id)) {
+                // dd('ingrediente');
+                $escandallo = new Escandallo([
+                    'ingredient_id' => $ingredient->ingredient_id,
+                    'quantity' => $ingredient->quantity,
+                    'recipe_id' => $this->recipe->id,
+                ]);
+                $escandallo->save();
+            } elseif (isset($ingredient->recipe_id)) {
+                // obtenemos la receta, sus ingredientes y los asociamos a la receta
+                $recipe = Recipe::find($ingredient->recipe_id);
+                foreach ($recipe->escandallos as $escandallo) {
+                    $escandallo = new Escandallo([
+                        'ingredient_id' => $escandallo->ingredient_id,
+                        'quantity' => $escandallo->quantity,
+                        'recipe_id' => $this->recipe->id,
+                    ]);
+                    $escandallo->save();
+                }
+                
+            }
+            
         }
+
         // calculamos coste
         $this->recipe->update(['cost' => $this->calculateCostOfRecipe()]);
+        // 
+        return true;
+    }
 
-        return $this->recipe;
+    public function getRecetaMayorCoste() {
+        return $recetaMayorCoste = Recipe::orderBy('cost', 'desc')->first();
+
+    }
+    public function getRecetaMenorCoste() {
+        return $recetaMenorCoste = Recipe::orderBy('cost', 'asc')->first();
+    }
+
+
+    public function calcMargenes(&$recipes){
+        foreach ($recipes as $receta) {
+            if ($receta->cost != 0) {
+                $receta->margen = (($receta->sale_price - $receta->cost) / $receta->cost * 100)."%"; //
+            } else {
+                $receta->margen = "0%"; // 
+            }
+        }
+        return $recipes;
+    }
+
+    /*
+    * Método para obtener la receta con el margen de beneficio más alto a partir de un conjunto de recetas
+    */
+    public function getRecetaMayorMargen(Collection &$recipes) {
+        return $recetaMayorMargen = $recipes->sortByDesc('margen')->first();
+    }
+
+    /*
+    * Método para obtener la receta con el margen de beneficio más bajo a partir de un conjunto de recetas
+    */
+    public function getRecetaMenorMargen(Collection &$recipes) {
+        return $recetaMenorMargen = $recipes->sortBy('margen')->first();
     }
 
    
@@ -76,16 +135,17 @@ class RecipeUtilityService
         foreach ($recipe->escandallos as $escandallo) {
             // si se trata de un ingrediente accedemos al coste del ingrediente
             if ($escandallo->ingredient) {
-                $totalCost += $escandallo->ingredient->getCost();
+                $totalCost += ($escandallo->ingredient->cost * $escandallo->quantity);
             } else if ($escandallo->recipe) {
                 // si se trata de una receta accedemos al coste de la receta
                 $totalCost += $this->calculateCostOfRecipe($escandallo->recipe, $processedRecipes);
             }
         }
-
+        // dd($totalCost);
         // haciendolo así nos ahorramos calcular los costes a través de la relación de ingredientes de la receta y podemos reutilizar la función en otros casos de uso o en caso que se actualizen los costes de los ingredientes
         return $totalCost;
     }
+
 
 
 

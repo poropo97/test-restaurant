@@ -1,12 +1,11 @@
 <?php
 
 
-namespace App\Services;
+namespace App\Services\Recipe;
 
-use App\Services\RecipeUtilityService;
+use App\Services\Recipe\RecipeUtilityService;
 use App\Models\Recipe;
 use App\Models\Escandallo;
-
 
 
 /*
@@ -37,14 +36,33 @@ class RecipeService extends RecipeUtilityService
         $this->validateIngredients($ingredients);
         // creamos la receta
         $this->createRecipeData($name, $salePrice, $ingredients);
-
+        // 
+        // $this->recipe->fresh();
+        // 
+        return $this->recipe;
     }
 
-    /*
+    /*  Devolver la receta con el coste más elevado junto con su valor.
+     *   Devolver la receta con el coste más bajo junto con su valor.
+     *   Devolver la receta con el margen de beneficio más alto junto con su valor. Devolver la receta con el margen de beneficio más bajo junto con su valor.
     * 
     */
-    public function getCostAnalysis()
+    public function getMargenes()
     {
-        // 
+
+        // obtenemos todas las recetas
+        $recetas = Recipe::all();
+        // calculamos los márgenes
+        $this->calcMargenes($recetas);
+        // devolvemos los resultados
+        return [
+            'recetaMayorCoste' => $this->getRecetaMayorCoste()->toArray(),
+            'recetaMenorCoste' => $this->getRecetaMenorCoste()->toArray(),
+            'recetaMayorMargen' => $this->getrecetaMayorMargen($recetas)->toArray(),
+            'recetaMenorMargen' => $this->getrecetaMenorMargen($recetas)->toArray()
+        ];
+
+
+        
     }
 }

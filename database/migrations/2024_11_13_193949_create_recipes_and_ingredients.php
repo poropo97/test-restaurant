@@ -31,9 +31,10 @@ return new class extends Migration
         // recipe_ingredients pivot table migration (Escandallo)
         Schema::create('recipe_ingredients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('recipe_id')->constrained();
-            $table->foreignId('ingredient_id')->constrained();
+            $table->foreignId('recipe_id')->nullable()->constrained();
+            $table->foreignId('ingredient_id')->nullable()->constrained();
             $table->decimal('quantity', 8, 2);
+            $table->timestamps();
         });
     }
 
