@@ -11,6 +11,11 @@ class Recipe extends Model
 
     protected $fillable = ['name', 'sale_price', 'cost'];
 
+    public function escandallos()
+    {
+        return $this->hasMany(Escandallo::class, 'recipe_id');
+    }
+
     // Relación muchos a muchos con Ingredient
     public function ingredients()
     {
@@ -18,18 +23,5 @@ class Recipe extends Model
                     ->withPivot('quantity');
     }
 
-    // Relación muchos a muchos con otras recetas (sub-recetas)
-    public function subRecipes()
-    {
-        return $this->belongsToMany(Recipe::class, 'recipe_ingredients', 'recipe_id', 'ingredient_id')
-                    ->withPivot('quantity');
-    }
-
-    // Método para calcular el margen de beneficio
-    public function getMargin()
-    {
-        if ($this->sale_price == 0) {
-            return 0; // O puedes devolver null u otro valor que indique que el margen no es aplicable.
-        }
-        return ($this->sale_price - $this->cost) / $this->sale_price * 100;    }
+   
 }

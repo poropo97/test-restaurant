@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\UseCases\AddSale;
+use App\Services\AddSale;
 
 class AddSaleCommand extends Command
 {

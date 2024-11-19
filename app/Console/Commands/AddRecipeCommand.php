@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\UseCases\AddRecipe;
+use App\Services\AddRecipe;
 
 class AddRecipeCommand extends Command
 {

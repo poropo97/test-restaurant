@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\UseCases\AddRecipe;
+use App\Services;
 
 class RecipeController extends Controller
 {
