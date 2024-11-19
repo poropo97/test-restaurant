@@ -11,22 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // sales migration
-        Schema::create('sales', function (Blueprint $table) {
-            $table->id();
-            $table->date('sale_date');
-            $table->timestamps();
-        });
-
+       
         // sale_lines migration
         Schema::create('sale_lines', function (Blueprint $table) {
 
             $table->id();
             $table->timestamps();
-
-            $table->foreignId('sale_id')->constrained();
+            $table->date('sale_date');
             $table->foreignId('recipe_id')->constrained();
-            $table->integer('quantity');
             $table->decimal('price', 8, 2);
         });
     }
@@ -37,6 +29,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('sale_lines');
-        Schema::dropIfExists('sales');
+        // Schema::dropIfExists('sales');
     }
 };

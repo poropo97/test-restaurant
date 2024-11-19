@@ -47,17 +47,20 @@ class RecipeService extends RecipeUtilityService
      *   Devolver la receta con el margen de beneficio más alto junto con su valor. Devolver la receta con el margen de beneficio más bajo junto con su valor.
     * 
     */
-    public function getMargenes()
+    public function getMargenes(\Illuminate\Database\Eloquent\Builder $recetas = null)
     {
 
-        // obtenemos todas las recetas
-        $recetas = Recipe::all();
+        // En caso de que no se haya pasado ninguna receta, se obtienen todas las recetas
+        $recetas = $recetas ?: Recipe::query();
+        $recetas = $recetas->get();
         // calculamos los márgenes
-        $this->calcMargenes($recetas);
+        $recetas = $this->calcMargenes($recetas);
+
+        
         // devolvemos los resultados
         return [
-            'recetaMayorCoste' => $this->getRecetaMayorCoste()->toArray(),
-            'recetaMenorCoste' => $this->getRecetaMenorCoste()->toArray(),
+            'recetaMayorCoste' => $this->getRecetaMayorCoste($recetas)->toArray(),
+            'recetaMenorCoste' => $this->getRecetaMenorCoste($recetas)->toArray(),
             'recetaMayorMargen' => $this->getrecetaMayorMargen($recetas)->toArray(),
             'recetaMenorMargen' => $this->getrecetaMenorMargen($recetas)->toArray()
         ];

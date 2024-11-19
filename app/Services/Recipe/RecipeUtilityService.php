@@ -81,16 +81,17 @@ class RecipeUtilityService
         return true;
     }
 
-    public function getRecetaMayorCoste() {
-        return $recetaMayorCoste = Recipe::orderBy('cost', 'desc')->first();
-
-    }
-    public function getRecetaMenorCoste() {
-        return $recetaMenorCoste = Recipe::orderBy('cost', 'asc')->first();
+    public function getRecetaMayorCoste(Collection $recipes) {
+        return $recipes->sortByDesc('cost')->first();
     }
 
+    
+    public function getRecetaMenorCoste(Collection $recipes) {
+        return $recetaMenorCoste = $recipes->sortBy('cost')->first();
+    }
 
-    public function calcMargenes(&$recipes){
+
+    public function calcMargenes($recipes){
         foreach ($recipes as $receta) {
             if ($receta->cost != 0) {
                 $receta->margen = (($receta->sale_price - $receta->cost) / $receta->cost * 100)."%"; //
