@@ -1,4 +1,3 @@
-
 # Gestión de Recetas y Ventas para Restaurante
 
 Este proyecto permite gestionar recetas (escandallos) y ventas en un restaurante, proporcionando funciones para registrar recetas con ingredientes, calcular márgenes de beneficio, y analizar ventas diarias.
@@ -14,6 +13,10 @@ Este proyecto permite gestionar recetas (escandallos) y ventas en un restaurante
 ## Instalación
 
 1. **Clonar el repositorio**
+
+    ```bash
+    git clone <URL_DEL_REPOSITORIO>
+    ```
 
 2. **Instalar dependencias**
 
@@ -52,42 +55,46 @@ Para agregar una receta con ingredientes, utiliza el comando `recipe:add`.
 php artisan recipe:add "NombreReceta" <precio_venta> "<id_ingrediente,cantidad>" ...
 ```
 
-**Ejemplo**:
+Por ejemplo:
 
 ```bash
-php artisan recipe:add "Guacamole" 0 "1,2" "2,1" "3,1" "4,0.5" "5,0.01"
+php artisan recipe:add "Pizza Margarita" 12.50 "1,200" "2,150"
 ```
 
-Este comando agregará la receta "Guacamole" con los ingredientes especificados y calculará su coste total y margen de beneficio.
+Este comando creará una nueva receta llamada "Pizza Margarita" con un precio de venta de 12.50. Los ingredientes se especifican mediante el ID del ingrediente seguido de la cantidad necesaria en gramos (u otra unidad, según esté configurado).
 
-#### 2. Agregar una Venta
+#### 2. Registrar una Venta
 
-Para registrar una venta, utiliza el comando `sale:add`. Esto calculará automáticamente los márgenes de beneficio de cada receta vendida y el día con el mayor y menor volumen de ventas.
+Para registrar una venta de una receta, utiliza el comando `app:sale`.
 
 ```bash
-php artisan sale:add "<fecha_venta>" "<id_receta,cantidad,precio_opcional>" ...
+php artisan app:sale <fecha> <id_receta>
 ```
 
-**Ejemplo**:
+Por ejemplo:
 
 ```bash
-php artisan sale:add "2024-07-02" "2,10" "3,5,10" "2,8" "3,2"
+php artisan app:sale 2014-04-13 3
 ```
 
-Este comando registrará una venta en la fecha especificada con las recetas, cantidades y precios proporcionados. Si no se especifica un precio, se usará el precio de venta de la receta.
+Este comando registra una venta de la receta con ID 3, aumentando su contador de ventas.
 
-## Explicación Breve del Código
+#### 3. Consultar Márgenes de Beneficio
 
-1. **Migraciones**: Crean tablas para ingredientes, recetas, ventas y líneas de venta, incluyendo relaciones y estructuras necesarias para almacenar los datos.
-2. **Seeders**: Añaden ingredientes y recetas iniciales a la base de datos para facilitar el uso y evitar errores de referencia.
-3. **Modelos**: Definen las relaciones entre las tablas:
-    - `Recipe` (recetas) se conecta con `Ingredient` (ingredientes) y otras `Recipe` como sub-recetas.
-    - `Sale` (ventas) tiene varias `SaleLine` (líneas de venta), que incluyen recetas vendidas, cantidades y precios.
-4. **Casos de Uso**:
-    - `AddRecipe`: Agrega recetas y calcula su coste, así como los márgenes de beneficio.
-    - `AddSale`: Registra ventas, calcula los márgenes de cada receta vendida y analiza el día con mayor y menor volumen de ventas.
-5. **Comandos Artisan**:
-    - `AddRecipeCommand`: Permite agregar recetas y mostrar el análisis de costes desde la consola.
-    - `AddSaleCommand`: Registra ventas y calcula el margen de beneficio y análisis de ventas desde la consola.
+Para calcular los márgenes de beneficio de todas las recetas, utiliza el comando `app:get-margenes`.
 
-Este proyecto permite gestionar recetas y ventas en un restaurante de manera eficiente a través de la línea de comandos, facilitando el cálculo de costes y márgenes de beneficio. No se ha seguido ninguna metodología específica como hexagonal, más allá de las convenciones de Laravel.
+```bash
+php artisan app:get-margenes
+```
+
+Este comando mostrará una lista con los márgenes de cada receta, calculados como la diferencia entre el precio de venta y el costo total de los ingredientes.
+
+## Pruebas
+
+El proyecto incluye un conjunto de pruebas para asegurar el correcto funcionamiento. Para ejecutarlas, utiliza el siguiente comando:
+
+```bash
+php artisan test
+```
+
+Esto correrá las pruebas unitarias y funcionales definidas para la aplicación.

@@ -11,7 +11,7 @@ class SaleLine extends Model
 
     public $timestamps = false; // Desactiva el manejo de timestamps
 
-    protected $fillable = ['sale_id', 'recipe_id', 'quantity', 'price'];
+    protected $fillable = ['recipe_id', 'price', 'sale_date'];
 
     public function sale()
     {
