@@ -56,7 +56,7 @@ class RecipeService extends RecipeUtilityService
         // calculamos los márgenes
         $recetas = $this->calcMargenes($recetas);
 
-        
+        // dd($recetas->toArray());
         // devolvemos los resultados
         return [
             'recetaMayorCoste' => $this->getRecetaMayorCoste($recetas)->toArray(),

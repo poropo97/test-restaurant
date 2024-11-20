@@ -42,6 +42,8 @@ class RecipeUtilityService
 
     public function createRecipeData($name, $salePrice, $ingredients) : Bool
     {
+        // 
+        $this->recipe = new Recipe();
         // creamos la receta
         $this->recipe->name = $name;
         $this->recipe->sale_price = $salePrice;
@@ -106,14 +108,18 @@ class RecipeUtilityService
     * Método para obtener la receta con el margen de beneficio más alto a partir de un conjunto de recetas
     */
     public function getRecetaMayorMargen(Collection &$recipes) {
-        return $recetaMayorMargen = $recipes->sortByDesc('margen')->first();
+        return $recipes->sortByDesc(function($recipe) {
+            return floatval(str_replace('%', '', $recipe->margen));
+        })->first();
     }
 
     /*
     * Método para obtener la receta con el margen de beneficio más bajo a partir de un conjunto de recetas
     */
     public function getRecetaMenorMargen(Collection &$recipes) {
-        return $recetaMenorMargen = $recipes->sortBy('margen')->first();
+        return $recipes->sortBy(function($recipe) {
+            return floatval(str_replace('%', '', $recipe->margen));
+        })->first();
     }
 
    
@@ -126,24 +132,13 @@ class RecipeUtilityService
         $recipe = $recipe ?: $this->recipe;
         $totalCost = 0;
 
-        // Evitar loops infinitos <- importante
-        if (in_array($recipe->id, $processedRecipes)) {
-            return 0;
-        }
-        $processedRecipes[] = $recipe->id;
-
-        // recorremos los escandallos de una receta y sumamos el coste de cada ingrediente
         foreach ($recipe->escandallos as $escandallo) {
-            // si se trata de un ingrediente accedemos al coste del ingrediente
-            if ($escandallo->ingredient) {
-                $totalCost += ($escandallo->ingredient->cost * $escandallo->quantity);
-            } else if ($escandallo->recipe) {
-                // si se trata de una receta accedemos al coste de la receta
-                $totalCost += $this->calculateCostOfRecipe($escandallo->recipe, $processedRecipes);
+            $ingredient = Ingredient::find($escandallo->ingredient_id);
+            if ($ingredient) {
+                $totalCost += $ingredient->cost * $escandallo->quantity;
             }
         }
-        // dd($totalCost);
-        // haciendolo así nos ahorramos calcular los costes a través de la relación de ingredientes de la receta y podemos reutilizar la función en otros casos de uso o en caso que se actualizen los costes de los ingredientes
+    
         return $totalCost;
     }
 
